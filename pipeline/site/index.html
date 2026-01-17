@@ -1,0 +1,108 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combat News</title>
+<style>
+  body { font-family: system-ui, Arial; margin: 18px; }
+  header { display:flex; flex-wrap: wrap; gap: 12px; align-items: baseline; }
+  .meta { color:#555; font-size: 13px; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  input, select { padding:8px 10px; border:1px solid #ddd; border-radius:10px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap:12px; }
+  .card { border:1px solid #ddd; border-radius:14px; padding:12px; background:#fff; }
+  .pill { display:inline-block; font-size:12px; padding:3px 8px; border:1px solid #eee; border-radius:999px; margin-right:6px; }
+  h3 { margin: 10px 0 6px; font-size: 16px; line-height: 1.25; }
+  a { color: inherit; }
+</style>
+
+<header>
+  <h1 style="margin:0">Combat News</h1>
+  <div class="meta">Generado: 2026-01-17T12:53:46+00:00 · Items: 12</div>
+</header>
+
+<div class="controls">
+  <input id="q" placeholder="Buscar (título / dominio / fuente)..." style="flex:1; min-width: 240px;">
+  <select id="sport">
+    <option value="">Todos</option>
+    <option value="MMA">MMA</option>
+    <option value="Boxeo">Boxeo</option>
+    <option value="Mixto">Mixto</option>
+  </select>
+  <select id="source">
+    <option value="">Todas las fuentes</option>
+  </select>
+</div>
+
+<div id="count" class="meta"></div>
+<div id="grid" class="grid"></div>
+
+<script>
+const ITEMS = [{"title": "El cese de Xabi Alonso llega hasta la UFC y una leyenda explota: \"Le despiden por niños malcriados\" 13/01/2026 a las 16:44", "url": "https://www.eurosport.es/mma/ufc/2026/khabib-nurmagomedov-xabi-alonso-cese-explota-le-despiden-ninos-malcriados_sto23258643/story.shtml", "source": "eurosport_ufc", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:52:06+00:00", "sport": "MMA", "preview": "Eurosport El cese de Xabi Alonso llega hasta la UFC y una leyenda como Khabib Nurmagomedov explota: \"Le despiden por niños malcriados\" Por El despido de Xabi Alonso como entrenador del Real Madrid sigue dando y mucho de qué hablar. El eco de esta noticia de alcance mundial en el"}, {"title": "UFC Pimblett asegura que será campeón indiscutido por la ausencia de Topuria: \"Mientras esté fuera...\" 13/01/2026 a las 20:31", "url": "https://www.eurosport.es/mma/ufc/2026/declaraciones-pimblett-ausencia-topuria-futura-pelea-cinturon-indiscutido_sto23258744/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:52:00+00:00", "sport": "MMA", "preview": "Eurosport Pimblett asegura que será campeón indiscutido si gana a Gaethje en UFC 324 por la ausencia de Topuria: \"Mientras esté fuera lo seré\" Por Paddy Pimblett ha vuelto a señalar directamente a Ilia Topuria por del parón por motivos personales, la posible futura pelea y el cin"}, {"title": "UFC 'Asalto al octágono': la trayectoria de la UFC contada de la mejor manera por Álvaro Colmenero 14/01/2026 a las 20:56", "url": "https://www.eurosport.es/mma/ufc/2026/asalto-al-octagono-alvaro-colmenero-libro-ver-artes-marciales_sto23259084/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:59+00:00", "sport": "MMA", "preview": "Eurosport 'Asalto al octágono': la trayectoria de la UFC contada de la mejor manera por Álvaro Colmenero Por Asalto al octágono es un viaje apasionante que recorre la historia de la mayor liga de MMA del mundo, desde sus humildes y desafiantes inicios hasta su consolidación como"}, {"title": "MMA Gaethje marca territorio y lanza un serio órdago a Topuria: \"Voy a vencerle\" 14/01/2026 a las 23:15", "url": "https://www.eurosport.es/mma/justin-gaethje-peso-ligero-cinturon-campeon-paddy-pimblett-ilia-topuria-declaraciones_sto23259108/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:58+00:00", "sport": "MMA", "preview": "Eurosport Gaethje marca territorio y lanza un serio órdago a Topuria antes de su pelea ante Pimblett: \"Voy a vencerle\" Por Si hay un peleador que está pasando totalmente por debajo del radar en la 'saga Topuria' en el peso ligero es Justin Gaethje. El que fuera campeón interino d"}, {"title": "UFC Golpe a la primera cartelera de 2026: Se cae una de las mejores peleas femeninas de la historia Ayer a las 20:12", "url": "https://www.eurosport.es/mma/ufc/2026/baja-kayla-harrison-lesion-pelea-titulo-gallo-amanda-nunes-324-sustituta_sto23259051/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:58+00:00", "sport": "MMA", "preview": "Eurosport Golpe a la primera cartelera de 2026 para l UFC: Se cae una de las mejores peleas femeninas de la historia por la lesión de Kayla Harrison Por Kayla Harrison será baja en el combate coestelar de UFC 324 que le debía enfrentar a Amanda Nunes por el cinturón de peso gallo"}, {"title": "UFC Makhachev no quiere saber nada de Topuria... en el ligero: \"¿Para qué? Si quiere subir, bienvenido\" Ayer a las 15:06", "url": "https://www.eurosport.es/mma/ufc/2026/video-makhachev-no-quiere-saber-nada-topuria-peso-ligero-para-que-si-quiere-subir-bienvenido_sto23259337/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:56+00:00", "sport": "MMA", "preview": "Eurosport UFC | Islam Makhachev no quiere saber nada de Ilia Topuria... en el peso ligero: \"¿Para qué? Si quiere subir de categoría, bienvenido\" Por Una futura pelea entre Islam Makhachev e Ilia Topuria continúa siendo uno de los grandes sueños por cumplir para todos los aficiona"}, {"title": "UFC ¿Adiós al sueño de McGregor en el esperado evento de la Casa Blanca? \"Eso tocaba hace varios años\" Ayer a las 22:36", "url": "https://www.eurosport.es/mma/ufc/2026/dana-white-conor-mcgregor-combate-casa-blanca-rival-michael-chandler_sto23259435/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:55+00:00", "sport": "MMA", "preview": "Eurosport ¿Adiós al sueño de McGregor en el esperado evento de la Casa Blanca? \"Eso tocaba hace varios años...\" Por Aunque la vuelta de Conor McGregor parecía un hecho para ese evento que prepara la UFC en la Casa Blanca, Dana White ha bajado el 'suflé' al peleador irlandés, que"}, {"title": "UFC Salen a la luz nuevos detalles de la fecha del Topuria vs Makhachev: \"Antes de lo que imaginamos\" Ayer a las 19:11", "url": "https://www.eurosport.es/mma/ufc/2026/nuevos-detalles-fecha-pelea-topuria-makahchev-declaraciones-merab_sto23259417/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:54+00:00", "sport": "MMA", "preview": "Eurosport Salen a la luz nuevos detalles del Topuria vs Makhachev acerca de la fecha de la pelea: \"Podría suceder antes de lo que imaginamos\" Por Merab Dvalishvili ha desvelado nuevos detalles de la posible pelea entre Ilia Topuria e Islam Makhachev asegurando que tiene informaci"}, {"title": "UFC Holloway incide en su propuesta a Topuria para resolver la polémica del BMF: \"No puedes enfadarte\" hace 18 horas", "url": "https://www.eurosport.es/mma/ufc/2026/holloway-repite-propuesta-topuria-bmf-peso-ligero-pelea_sto23259804/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:53+00:00", "sport": "MMA", "preview": "Eurosport Holloway incide en su propuesta Topuria para resolver la polémica del BMF y poner en juego los dos cinturones en una sola pelea: \"No puedes enfadarte\" Por Max Holloway le ha propuesto a Ilia Topuria poner en juego el cinturón del BMF y el título indiscutido del peso lig"}, {"title": "UFC La UFC esperará a Topuria y aceptaría una defensa del interino: \"No le van a quitar el título\" hace 17 horas", "url": "https://www.eurosport.es/mma/ufc/2026/posible-defensa-cinturon-interino-gaethje-pimblett-topuria-vuelta-problemas-familiares_sto23259790/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:52+00:00", "sport": "MMA", "preview": "Eurosport La UFC esperará a Topuria todo el año y aceptaría una defensa del cinturón interino si hiciese falta: \"No le van a quitar el título\" Por La división del peso ligero de la UFC podría llegar a tener una defensa del cinturón interino si hiciese falta a la espera del regres"}, {"title": "UFC Topuria reafirma su plan de regreso tras ganar el KO del año: \"También será mío en 2026\" hace 15 horas", "url": "https://www.eurosport.es/mma/ufc/2026/topuria-gana-ko-ano-pelea-oliveira-anuncia-plan-fecha-rival-regreso_sto23259838/story.shtml", "source": "eurosport_mma", "domain": "www.eurosport.es", "published": "", "fetched_at": "2026-01-17T12:51:52+00:00", "sport": "MMA", "preview": "Eurosport Topuria reafirma la fecha y el rival de su plan de regreso tras ganar el KO del año de la UFC: \"También será mío en 2026\" Por La UFC le ha otorgado a Ilia Topuria el premio al mejor KO de 2025 referente a su brillante actuación contra Charles Oliveira en UFC 317. Además"}, {"title": "Ilia Topuria confirma cuándo volverá a pelear y quién será su próximo rival", "url": "https://www.marca.com/combates-ufc/2026/01/16/ilia-topuria-confirma-volvera-pelear-sera-proximo-rival.html", "source": "marca_portada", "domain": "www.marca.com", "published": "Fri, 16 Jan 2026 23:23:26 +0100", "fetched_at": "2026-01-17T12:51:49+00:00", "sport": "MMA", "preview": "- PEDRO DE PABLOS - UFC Otro desafío de Pimblett a Topuria: \"Es muy pequeño...\" - UFC Makhachev reta a Topuria, en peso wélter Ilia Topuria acaba de confirmar a través de su cuenta de 'X' cuándo volverá a subirse al octágono y quién será su siguiente rival. El primer doble campeó"}];
+
+const qEl = document.getElementById('q');
+const sportEl = document.getElementById('sport');
+const sourceEl = document.getElementById('source');
+const gridEl = document.getElementById('grid');
+const countEl = document.getElementById('count');
+
+function uniq(arr) {
+  return Array.from(new Set(arr)).sort();
+}
+
+function initSources() {
+  const sources = uniq(ITEMS.map(x => x.source).filter(Boolean));
+  for (const s of sources) {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    sourceEl.appendChild(opt);
+  }
+}
+
+function escapeHtml(s) {
+  return (s || '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;');
+}
+
+function render() {
+  const q = (qEl.value || '').toLowerCase().trim();
+  const sport = sportEl.value;
+  const source = sourceEl.value;
+
+  const filtered = ITEMS.filter(x => {
+    if (sport && x.sport !== sport) return false;
+    if (source && x.source !== source) return false;
+    if (!q) return true;
+    const hay = (x.title + ' ' + x.domain + ' ' + x.source).toLowerCase();
+    return hay.includes(q);
+  });
+
+  countEl.textContent = `Mostrando ${filtered.length} de ${ITEMS.length}`;
+  gridEl.innerHTML = '';
+
+  for (const x of filtered) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div>
+        <span class="pill">${escapeHtml(x.sport)}</span>
+        <span class="pill">${escapeHtml(x.source)}</span>
+        <span class="pill">${escapeHtml(x.domain)}</span>
+      </div>
+      <h3><a href="${x.url}" target="_blank" rel="noreferrer">${escapeHtml(x.title)}</a></h3>
+      <div class="meta">Publicado: ${escapeHtml(x.published || '—')} · Capturado: ${escapeHtml(x.fetched_at || '—')}</div>
+      <p class="meta" style="margin-top:10px">${escapeHtml(x.preview || '')}</p>
+    `;
+    gridEl.appendChild(div);
+  }
+}
+
+qEl.addEventListener('input', render);
+sportEl.addEventListener('change', render);
+sourceEl.addEventListener('change', render);
+
+initSources();
+render();
+</script>
